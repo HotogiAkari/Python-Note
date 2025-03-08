@@ -64,9 +64,11 @@ python -m pip install uiautomation
 import subprocess
 import uiautomation as auto
  
-subprocess.Popen('notepad.exe')# 从桌面的第一层子控件中找到记事本程序的窗口WindowControl
+subprocess.Popen('notepad.exe')
+# 从桌面的第一层子控件中找到记事本程序的窗口WindowControl
 notepadWindow = auto.WindowControl(searchDepth=1, ClassName='Notepad')
-print(notepadWindow.Name)# 设置窗口前置
+print(notepadWindow.Name)
+# 设置窗口前置
 notepadWindow.SetTopmost(True)
 ````
 
@@ -91,13 +93,13 @@ Depth只在Depth所在的深度(如果Depth>1，排除1~searchDepth-1层中的�
 
 为了进一步操作该程序，我们可以使用inspect.exe工具或automation.py脚本分析控件结构。
 
-通过`inspect.exe`工具分析控件时可以看到记事本的编辑区类型为DocumentControl：
+通过`inspect.exe`工具分析控件时可以看到记事本的编辑区类型为WindowControl：
 
 (点击窗口可以让inspect跳转到对应的栏目)
 
 ![圖 3](images/Python_LUG%24E7KCX%7D_GAVF%605JE%5DG.png)  
 
-但`uiautomation`实际使用该类型查找控件时却会找不到控件报错。
+但`uiautomation`实际使用该类型查找控件时可能会找不到控件报错。
 
 下面使用automation.py脚本来分析目标窗口
 
@@ -107,5 +109,97 @@ Depth只在Depth所在的深度(如果Depth>1，排除1~searchDepth-1层中的�
 
 关于控件类型参考[Windows 窗体控件](https://learn.microsoft.com/zh-cn/dotnet/desktop/winforms/controls/?view=netframeworkdesktop-4.8)
 
-使用uiautomation向记事本输入文本
+**使用uiautomation向记事本输入文本**
 
+先获取记事本窗口
+
+````py
+# 获取 Notepad 窗口
+notepad = auto.WindowControl(searchDepth=1, ClassName='Notepad')
+notepad.SetFocus()
+````
+
+然后获取输入框
+
+````py
+edit = notepad.EditControl()
+````
+
+方法1-使用SetValue：
+
+````py
+edit.GetValuePattern().SetValue("输入内容")
+````
+该方法直接修改编辑框的文本内容
+
+方法2-发送按键指令输入文本：
+
+````py
+edit.SendKeys('输入按键或内容')
+````
+该方法的输入效果比较像打字机输入
+
+方法3-复制文本后到剪切板粘贴：
+
+````py
+auto.SetClipboardText("输入要粘贴的内容")
+edit.SendKeys('{Ctrl}v')
+````
+
+获取当前编辑框中的文本
+
+````py
+print(edit.GetValuePattern().Value)
+````
+
+最后我们点击标题栏的关闭按钮（可以通过索引或名称查找目标按钮）：
+
+````py
+# 通过标题栏第三个按钮找到关闭按钮
+notepadWindow.TitleBarControl(Depth=1).ButtonControl(foundIndex=3).Click()
+````
+或:
+````py
+# 通过标题栏查找名称为关闭的按钮
+notepadWindow.TitleBarControl(Depth=1).ButtonControl(searchDepth=1, Name='关闭').Click()
+````
+
+最后保存并关闭:
+
+````py
+notepadWindow.TitleBarControl(Depth=1).ButtonControl(searchDepth=1, Name='关闭').Click()# 确认保存
+auto.SendKeys('{ALT}s')# 输入文件名，并快捷键点击保存
+auto.SendKeys('自动保存{ALT}s')# 如果弹出文件名冲突提示，则确认覆盖
+auto.SendKeys('{ALT}y')
+````
+
+完整代码：
+
+````py
+import subprocess
+import uiautomation as auto
+ 
+subprocess.Popen('notepad.exe')# 首先从桌面的第一层子控件中找到记事本程序的窗口WindowControl，再从这个窗口查找子控件
+notepadWindow = auto.WindowControl(searchDepth=1, ClassName='Notepad')
+print(notepadWindow.Name)# 设置窗口前置
+notepadWindow.SetTopmost(True)
+# 获取 Notepad 窗口
+notepad = auto.WindowControl(searchDepth=1, ClassName='Notepad')
+notepad.SetFocus()
+# 输入文本
+edit = notepad.EditControl()
+edit.GetValuePattern().SetValue("输入内容")
+edit.SendKeys('输入按键或内容')
+auto.SetClipboardText("TEST")
+edit.SendKeys('{Ctrl}v')
+# 获取文本
+print("编辑框内容：",edit.GetValuePattern().Value)
+# # 通过标题栏查找名称为关闭的按钮
+notepadWindow.TitleBarControl(Depth=1).ButtonControl(searchDepth=1, Name='关闭').Click()
+# 确认保存
+auto.SendKeys('{ALT}s')
+# 输入文件名，并快捷键点击保存
+auto.SendKeys('自动保存{Ctrl}s')
+# 如果弹出文件名冲突提示，则确认覆盖
+auto.SendKeys('{ALT}y')
+````
