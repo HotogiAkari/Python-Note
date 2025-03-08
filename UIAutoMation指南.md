@@ -56,6 +56,8 @@ python -m pip install uiautomation
 
 ## 1. 控件分析与可用参数
 
+***示例: 使用uiautomation控制记事本***
+
 以下程序可以打开记事本并使使其窗口前置
 
 ````py
@@ -92,7 +94,8 @@ Depth只在Depth所在的深度(如果Depth>1，排除1~searchDepth-1层中的�
 通过`inspect.exe`工具分析控件时可以看到记事本的编辑区类型为DocumentControl：
 
 (点击窗口可以让inspect跳转到对应的栏目)
-![inspect](image/../images/image.png)
+
+![圖 3](images/Python_LUG%24E7KCX%7D_GAVF%605JE%5DG.png)  
 
 但`uiautomation`实际使用该类型查找控件时却会找不到控件报错。
 
@@ -101,4 +104,8 @@ Depth只在Depth所在的深度(如果Depth>1，排除1~searchDepth-1层中的�
 在cmd执行`automation.py`后在1秒内将鼠标激活记事本窗口，可以看到控制台打印
 
 ![圖 2](images/Python_pic_1741427422419.png)  
+
+关于控件类型参考[Windows 窗体控件](https://learn.microsoft.com/zh-cn/dotnet/desktop/winforms/controls/?view=netframeworkdesktop-4.8)
+
+使用uiautomation向记事本输入文本
 
