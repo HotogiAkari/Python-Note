@@ -1,11 +1,8 @@
-import tkinter as tk
-win = tk.Tk()
-win.geometry("500x500")
-win.title("Title")
 
-btn1 = tk.Button(win, width = 25, text = 'First Button')
-btn1.pack()
-btn2 = tk.Button(win, width = 25, text = 'Second Button')
-btn2.pack()
-
-win.mainloop()
+import subprocess
+import uiautomation as auto
+ 
+subprocess.Popen('notepad.exe')# 从桌面的第一层子控件中找到记事本程序的窗口WindowControl
+notepadWindow = auto.WindowControl(searchDepth=1, ClassName='Notepad')
+print(notepadWindow.Name)# 设置窗口前置
+notepadWindow.SetTopmost(True)
