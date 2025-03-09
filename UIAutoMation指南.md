@@ -35,7 +35,7 @@ UIAutomation操作程序时会给程序发送WM_GETOBJECT消息, 如果程序处
 ```
 UiaReturnRawElementProvider(HWND hwnd,WPARAM wparam,LPARAM lparam,IRawElementProviderSimple *el)
 ```
-此程序就支持UIAutomation.
+此[text](c:/Users/Akari/Desktop/Seq_List.c)程序就支持UIAutomation.
 
 `IRawElementProviderSimple` 就是 `UI Automation Provider`, 包含了控件的各种信息, 如`Name` `ClassName` `ContorlType`坐标等. 
 
