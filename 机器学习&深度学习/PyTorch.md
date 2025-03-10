@@ -1,5 +1,18 @@
 <font size=5>PyTorch指南</font>
 
+<font size=4>目录</font>
+
+- [1. 基本概念](#1-基本概念)
+  - [1. `Tensor`张量](#1-tensor张量)
+  - [2. `Autograd`自动求导](#2-autograd自动求导)
+  - [3. `nn.Module`神经网络](#3-nnmodule神经网络)
+  - [4. `Optimizers`优化器](#4-optimizers优化器)
+  - [5. `Device`设备](#5-device设备)
+- [2. 读取档案](#2-读取档案)
+  - [1. `Dataset`](#1-dataset)
+  - [2. `Dataloader`](#2-dataloader)
+
+
 > PyTorch是一个机器学习库, 基于 Torch 库, 底层由C++实现. 它主要有两个用途: 
 >
 >- 类似Numpy但是能利用GPU加速
@@ -30,17 +43,17 @@ PyTorch 主要有以下几个基础概念: 张量(Tensor), 自动求导(Autograd
 
 ## 1. `Tensor`张量
 
-`Tensor`张量是 张量是一个多维数组，可以是标量、向量、矩阵或更高维度的数据结构
+`Tensor`张量是 张量是一个多维数组, 可以是标量, 向量, 矩阵或更高维度的数据结构
 
 `Tensor`PyTorch 中的核心数据结构, 用于存储和操作多维数组. 
 
 张量可以视为一个多维数组, 支持加速计算的操作. 
 
-在 PyTorch 中, 张量的概念类似于 NumPy 中的数组, 但具有更强大的功能，例如支持 GPU 加速和自动梯度计算
+在 PyTorch 中, 张量的概念类似于 NumPy 中的数组, 但具有更强大的功能, 例如支持 GPU 加速和自动梯度计算
 
-张量支持多种数据类型（整型、浮点型、布尔型等）。
+张量支持多种数据类型(整型, 浮点型, 布尔型等)。
 
-张量可以存储在 CPU 或 GPU 中，GPU 张量可显著加速计算
+张量可以存储在 CPU 或 GPU 中, GPU 张量可显著加速计算
 
 - `Dimensionality`维度: 张量的维度指的是数据的多维数组结构. 例如, 一个标量(0维张量)是一个单独的数字, 一个向量(1维张量)是一个一维数组, 一个矩阵(2维张量)是一个二维数组, 以此类推. 
 
@@ -50,15 +63,15 @@ PyTorch 主要有以下几个基础概念: 张量(Tensor), 自动求导(Autograd
 
 **维度**
 
-- 1D Tensor / Vector（一维张量/向量）: 最基本的张量形式，可以看作是一个数组
+- 1D Tensor / Vector(一维张量/向量): 最基本的张量形式, 可以看作是一个数组
 
-- 2D Tensor / Matrix（二维张量/矩阵）: 二维数组，通常用于表示矩阵
+- 2D Tensor / Matrix(二维张量/矩阵): 二维数组, 通常用于表示矩阵
 
-- 3D Tensor / Cube（三维张量/立方体）: 三维数组，可以看作是由多个矩阵堆叠而成的立方体
+- 3D Tensor / Cube(三维张量/立方体): 三维数组, 可以看作是由多个矩阵堆叠而成的立方体
 
-- 4D Tensor / Vector of Cubes（四维张量/立方体向量）: 四维数组，可以看作是由多个立方体组成的向量
+- 4D Tensor / Vector of Cubes(四维张量/立方体向量): 四维数组, 可以看作是由多个立方体组成的向量
 
-- 5D Tensor / Matrix of Cubes（五维张量/立方体矩阵）: 五维数组，可以看作是由多个4D张量组成的矩阵，可以理解为一个包含多个 4D 张量的集合。
+- 5D Tensor / Matrix of Cubes(五维张量/立方体矩阵): 五维数组, 可以看作是由多个4D张量组成的矩阵, 可以理解为一个包含多个 4D 张量的集合。
 
 **张量创建**
 
@@ -70,11 +83,11 @@ PyTorch 主要有以下几个基础概念: 张量(Tensor), 自动求导(Autograd
 | `torch.zeros(size)`                 | 创建一个全为零的张量                                 | x = torch.zeros((2, 3))                   |
 | `torch.ones(size)`                  | 创建一个全为 1 的张量                                | x = torch.ones((2, 3))                    |
 | `torch.empty(size)`                 | 创建一个未初始化的张量                               | x = torch.empty((2, 3))                   |
-| `torch.rand(size)`                  | 创建一个服从均匀分布的随机张量，值在 [0, 1)          | x = torch.rand((2, 3))                    |
-| `torch.randn(size)`                 | 创建一个服从正态分布的随机张量，均值为 0，标准差为 1 | x = torch.randn((2, 3))                   |
-| `torch.arange(start, end, step)`    | 创建一个一维序列张量，类似于 Python 的 range         | x = torch.arange(0, 10, 2)                |
+| `torch.rand(size)`                  | 创建一个服从均匀分布的随机张量, 值在 [0, 1)          | x = torch.rand((2, 3))                    |
+| `torch.randn(size)`                 | 创建一个服从正态分布的随机张量, 均值为 0, 标准差为 1 | x = torch.randn((2, 3))                   |
+| `torch.arange(start, end, step)`    | 创建一个一维序列张量, 类似于 Python 的 range         | x = torch.arange(0, 10, 2)                |
 | `torch.linspace(start, end, steps)` | 创建一个在指定范围内等间隔的序列张量                 | x = torch.linspace(0, 1, 5)               |
-| `torch.eye(size)`                   | 创建一个单位矩阵（对角线为 1，其他为 0）             | x = torch.eye(3)                          |
+| `torch.eye(size)`                   | 创建一个单位矩阵(对角线为 1, 其他为 0)               | x = torch.eye(3)                          |
 | `torch.from_numpy(ndarray)`         | 将 NumPy 数组转换为张量                              | x = torch.from_numpy(np.array([1, 2, 3])) |
 
 ````py
@@ -106,7 +119,7 @@ print(d)
 
 运行如下:
 
-````
+```
 tensor([[0., 0., 0.],
         [0., 0., 0.]])
 tensor([[1., 1., 1.],
@@ -117,9 +130,128 @@ tensor([[1, 2],
         [3, 4]])
 tensor([[-0.3360,  0.2203,  1.3463],
         [-0.5982, -0.2704,  0.5429]])
+```
+
+使用 `torch.tensor()` 函数, 可以将一个列表或数组转换为张量
+
+````py
+import torch
+
+tensor = torch.tensor([1, 2, 3])
+print(tensor)
 ````
 
-**常用张量操作**
+运行如下
+
+```
+tensor([1, 2, 3])
+```
+
+使用 `torch.from_numpy()` 可以将 NumPy 数组转换为张量
+
+````py
+import numpy as np
+
+np_array = np.array([1, 2, 3])
+tensor = torch.from_numpy(np_array)
+print(tensor)
+````
+
+输出如下
+
+```
+tensor([1, 2, 3])
+```
+
+**张量的属性**
+
+| 属性               | 说明                           |
+| :----------------- | :----------------------------- |
+| `.shape`           | 获取张量的形状                 |
+| `.size()`          | 获取张量的形状                 |
+| `.dtype`           | 获取张量的数据类型             |
+| `.device`          | 查看张量所在的设备 (CPU/GPU)   |
+| `.dim()`           | 获取张量的维度数               |
+| `.requires_grad`   | 是否启用梯度计算               |
+| `.numel()`         | 获取张量中的元素总数           |
+| `.is_cuda`         | 检查张量是否在 GPU 上          |
+| `.T`               | 获取张量的转置(适用于 2D 张量) |
+| `.item()`          | 获取单元素张量的值             |
+| `.is_contiguous()` | 检查张量是否连续存储           |
+
+````py
+import torch
+
+# 创建一个 2D 张量
+tensor = torch.tensor([[1, 2, 3], [4, 5, 6]], dtype=torch.float32)
+
+# 张量的属性
+print("Tensor:\n", tensor)
+print("Shape:", tensor.shape)  # 获取形状
+print("Size:", tensor.size())  # 获取形状(另一种方法)
+print("Data Type:", tensor.dtype)  # 数据类型
+print("Device:", tensor.device)  # 设备
+print("Dimensions:", tensor.dim())  # 维度数
+print("Total Elements:", tensor.numel())  # 元素总数
+print("Requires Grad:", tensor.requires_grad)  # 是否启用梯度
+print("Is CUDA:", tensor.is_cuda)  # 是否在 GPU 上
+print("Is Contiguous:", tensor.is_contiguous())  # 是否连续存储
+
+# 获取单元素值
+single_value = torch.tensor(42)
+print("Single Element Value:", single_value.item())
+
+# 转置张量
+tensor_T = tensor.T
+print("Transposed Tensor:\n", tensor_T)
+````
+
+运行如下
+
+```
+Tensor:
+ tensor([[1., 2., 3.],
+         [4., 5., 6.]])
+Shape: torch.Size([2, 3])
+Size: torch.Size([2, 3])
+Data Type: torch.float32
+Device: cpu
+Dimensions: 2
+Total Elements: 6
+Requires Grad: False
+Is CUDA: False
+Is Contiguous: True
+Single Element Value: 42
+Transposed Tensor:
+ tensor([[1., 4.],
+         [2., 5.],
+         [3., 6.]])
+```
+
+**张量的操作**
+
+*基础操作*
+| 操作                    | 说明                         |
+| :---------------------- | :--------------------------- |
+| `+, -, *, /`            | 元素级加法, 减法, 乘法, 除法 |
+| `torch.matmul(x, y)`    | 矩阵乘法                     |
+| `torch.dot(x, y)`       | 向量点积(仅适用于 1D 张量)   |
+| `torch.sum(x)`          | 求和                         |
+| `torch.mean(x)`         | 求均值                       |
+| `torch.max(x)`          | 求最大值                     |
+| `torch.min(x)`          | 求最小值                     |
+| `torch.argmax(x, dim)`  | 返回最大值的索引(指定维度)   |
+| `torch.softmax(x, dim)` | 计算 softmax(指定维度)       |
+
+*形状操作*
+| 操作                     | 说明                       |
+| :----------------------- | :------------------------- |
+| `x.view(shape)`          | 改变张量的形状(不改变数据) |
+| `x.reshape(shape)`       | 类似于 view, 但更灵活      |
+| `x.t()`                  | 转置矩阵                   |
+| `x.unsqueeze(dim)`       | 在指定维度添加一个维度     |
+| `x.squeeze(dim)`         | 去掉指定维度为 1 的维度    |
+| `torch.cat((x, y), dim)` | 按指定维度连接多个张量     |
 
 ````py
 # 张量相加
@@ -140,7 +272,15 @@ print(g.shape)  # 返回形状
 
 **张量与设备**
 
-PyTorch 张量可以存在于不同的设备上, 包括CPU和GPU, 你可以将张量移动到 GPU 上以加速计算
+PyTorch 张量可以存在于不同的设备上, 包括CPU和GPU, 可以将张量移动到 GPU 上以加速计算
+
+检查GPU是否可用
+
+````py
+torch.cuda.is_available()  # 返回 True 或 False
+````
+
+将张量移动到GPU
 
 ````py
 if torch.cuda.is_available():
@@ -251,9 +391,9 @@ with torch.no_grad():
 
 神经网络是一种模仿人脑神经元连接的计算模型, 由多层节点(神经元)组成, 用于学习数据之间的复杂模式和关系. 
 
-神经网络通过调整神经元之间的连接权重来优化预测结果, 这一过程涉及前向传播、损失计算、反向传播和参数更新. 
+神经网络通过调整神经元之间的连接权重来优化预测结果, 这一过程涉及前向传播, 损失计算, 反向传播和参数更新. 
 
-神经网络的类型包括前馈神经网络、卷积神经网络(CNN)、循环神经网络(RNN)和长短期记忆网络(LSTM), 它们在图像识别、语音处理、自然语言处理等多个领域都有广泛应用. 
+神经网络的类型包括前馈神经网络, 卷积神经网络(CNN), 循环神经网络(RNN)和长短期记忆网络(LSTM), 它们在图像识别, 语音处理, 自然语言处理等多个领域都有广泛应用. 
 
 PyTorch 提供了一个非常方便的接口来构建神经网络模型, 即 `torch.nn.Module`. 
 
@@ -330,7 +470,7 @@ print(loss)
 
 优化器在训练过程中更新神经网络的参数, 以减少损失函数的值。
 
-PyTorch 提供了多种优化器, 例如 SGD、Adam 等。
+PyTorch 提供了多种优化器, 例如 SGD, Adam 等。
 
 **使用优化器进行参数更新:**
 
@@ -346,19 +486,19 @@ optimizer.step()  # 更新参数
 
 **训练模型**
 
-训练模型是机器学习和深度学习中的核心过程, 旨在通过大量数据学习模型参数, 以便模型能够对新的、未见过的数据做出准确的预测。
+训练模型是机器学习和深度学习中的核心过程, 旨在通过大量数据学习模型参数, 以便模型能够对新的, 未见过的数据做出准确的预测。
 
 训练模型通常包括以下几个步骤:
 1. 数据准备:
-   1. 收集和处理数据, 包括清洗、标准化和归一化
-   2. 将数据分为训练集、验证集和测试集
+   1. 收集和处理数据, 包括清洗, 标准化和归一化
+   2. 将数据分为训练集, 验证集和测试集
 2. 定义模型:
-   1. 选择模型架构, 例如决策树、神经网络等
+   1. 选择模型架构, 例如决策树, 神经网络等
    2. 初始化模型参数(权重和偏置)
 3. 选择损失函数:
-   1. 根据任务类型(如分类、回归)选择合适的损失函数
+   1. 根据任务类型(如分类, 回归)选择合适的损失函数
 4. 选择优化器:
-   1. 选择一个优化算法, 如SGD、Adam等, 来更新模型参数
+   1. 选择一个优化算法, 如SGD, Adam等, 来更新模型参数
 5. 前向传播:
    1. 在每次迭代中, 将输入数据通过模型传递, 计算预测输出
 6. 计算损失
@@ -372,7 +512,7 @@ optimizer.step()  # 更新参数
 10. 评估和测试
     1. 使用测试集评估模型的最终性能, 确保模型没有过拟合
 11. 模型调优
-    1. 根据模型在测试集上的表现进行调参, 如改变学习率、增加正则化等
+    1. 根据模型在测试集上的表现进行调参, 如改变学习率, 增加正则化等
 12. 部署模型
     1. 将训练好的模型部署到生产环境中, 用于实际的预测任务
 
@@ -434,7 +574,7 @@ Epoch [100/100], Loss: 1.1991
 
 在每 10 轮, 程序会输出当前的损失值, 帮助我们跟踪模型的训练进度。随着训练的进行, 损失值应该会逐渐降低, 表示模型在不断学习并优化其参数。
 
-训练模型是一个迭代的过程, 需要不断地调整和优化, 直到达到满意的性能。这个过程涉及到大量的实验和调优, 目的是使模型在新的、未见过的数据上也能有良好的泛化能力。
+训练模型是一个迭代的过程, 需要不断地调整和优化, 直到达到满意的性能。这个过程涉及到大量的实验和调优, 目的是使模型在新的, 未见过的数据上也能有良好的泛化能力。
 
 ## 5. `Device`设备
 
@@ -459,4 +599,65 @@ Y = Y.to(device)
 
 # 2. 读取档案
 
-在PyTorch中,可以使用`Dataset`或`Dataloader`读取档案
+在PyTorch中,可以使用`Dataset`或`Dataloader`加载数据
+
+通常 `Dataset` 用于定义数据集，而 `DataLoader` 用于加载数据
+
+| 对比           | `Dataset`                 | `Dataloader`                                  |
+| :------------- | :------------------------ | :-------------------------------------------- |
+| 作用           | 负责数据的存储和索引访问  | 负责批量加载数据、打乱数据、多线程处理等      |
+| 是否支持 batch | 不支持                    | 支持 batch 处理                               |
+| 是否支持多线程 | 不支持                    | 通过 `num_workers` 参数支持                   |
+| 是否打乱数据   | 不支持                    | 通过 `shuffle=True` 支持                      |
+| 调用方式       | `dataset[i]` 获取单个样本 | 通过 `for batch in dataloader` 迭代获取 batch |
+
+## 1. `Dataset`
+
+`Dataset` 主要用于定义数据的读取方式，提供数据的索引访问功能，是 PyTorch 数据加载机制的基础
+
+`Dataset`通常需要继承 `torch.utils.data.Dataset` 并实现：
+
+- __len__(): 返回数据集的样本数量。
+- __getitem__(index): 通过索引返回对应的样本（通常是数据和标签）
+
+````py
+from torch.utils.data import Dataset
+
+class MyDataset(Dataset):
+    def __init__(self, data, labels):
+        self.data = data
+        self.labels = labels
+
+    def __len__(self):
+        return len(self.data)
+
+    def __getitem__(self, index):
+        return self.data[index], self.labels[index]
+````
+
+以上`Dataset`允许通过索引访问数据,例如:
+
+````py
+dataset = MyDataset([1, 2, 3, 4], [0, 1, 0, 1])
+print(dataset[0])  # 输出: (1, 0)
+````
+
+## 2. `Dataloader`
+
+`DataLoader` 是 PyTorch 提供的一个数据加载器，它的作用是：
+
+- 自动化批量处理（batching）
+- 打乱数据（shuffling）
+- 使用多进程加载数据（num_workers）
+- 自定义采样方式（通过 sampler）
+
+````py
+from torch.utils.data import DataLoader
+
+dataloader = DataLoader(dataset, batch_size=2, shuffle=True)
+
+for batch in dataloader:
+    print(batch)
+````
+
+这会自动将 `dataset` 中的数据分成 `batch`，每次返回 2 个样本，并且可以选择是否打乱数据
