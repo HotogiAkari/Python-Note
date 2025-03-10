@@ -1,11 +1,13 @@
-import tkinter as tk
-win = tk.Tk()
-win.geometry("500x500")
-win.title("Title")
+from decimal import Decimal, getcontext
 
-btn1 = tk.Button(win, width = 25, text = 'First Button')
-btn1.pack()
-btn2 = tk.Button(win, width = 25, text = 'Second Button')
-btn2.pack()
+getcontext().prec = 500
 
-win.mainloop()
+x = Decimal(input('输入未知数: '))
+
+y = 0
+
+for i in range(100000):
+    z = i * x**(i-1)
+    y += z
+
+print(y)
